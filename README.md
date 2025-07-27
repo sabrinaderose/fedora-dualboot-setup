@@ -77,27 +77,41 @@ This project documents the configuration and recovery of a Fedora 42 KDE Plasma 
 - Verified theme path and file presence, then rebuilt GRUB
 - Final GRUB entries listed Fedora and Windows but used long kernel strings
 
-### Phase 4: Troubleshooting
-- Located BLS entry files:
-  ```bash
-  ls /boot/loader/entries/
-  ```
+### Phase 4: Troubleshooting & Cleanup
 
-- Renamed `title` lines inside:
-  ```bash
-  sudo nano /boot/loader/entries/[filename].conf
-  ```
+#### GRUB Entry Showing as "."
+After installation, a GRUB menu entry appeared as `"."`. This was discovered to be the newest Fedora kernel (6.15.7), but was visually confusing.
 
-  Example:
-  ```ini
-  title Fedora KDE Plasma
-  ```
+**Fix:**
+1. Locate the correct `.conf` BLS file:
+    ```bash
+    /boot/loader/entries/cc32cd06eeaa440faa33f95512551b9c-6.15.7-200.fc42.x86_64.conf
+    ```
 
-- Rebuilt GRUB config again:
-  ```bash
-  sudo grub2-mkconfig -o /boot/grub2/grub.cfg
-  sudo grub2-mkconfig -o /boot/efi/EFI/fedora/grub.cfg
-  ```
+2. Edit the file:
+    ```bash
+    sudo nano /boot/loader/entries/cc32cd06eeaa440faa33f95512551b9c-6.15.7-200.fc42.x86_64.conf
+    ```
+
+3. Update the `title` line to something meaningful:
+    ```ini
+    title Fedora KDE Plasma (6.15.7)
+    ```
+
+4. Rebuild GRUB:
+    ```bash
+    sudo grub2-mkconfig -o /boot/grub2/grub.cfg
+    sudo grub2-mkconfig -o /boot/efi/EFI/fedora/grub.cfg
+    ```
+
+5. Reboot and verify.
+
+**Optional**: Remove older kernel entries if no longer needed:
+```bash
+sudo rm /boot/loader/entries/cc32cd06eeaa440faa33f95512551b9c-6.14.0-63.fc42.x86_64.conf
+sudo grub2-mkconfig -o /boot/grub2/grub.cfg
+sudo grub2-mkconfig -o /boot/efi/EFI/fedora/grub.cfg
+```
 
 ---
 
@@ -155,59 +169,6 @@ This project documents the configuration and recovery of a Fedora 42 KDE Plasma 
 
 **Result**: Dual-boot system fully operational with custom GRUB menu; all config steps documented and reusable for future Linux deployments.
 
----
-
-## 🛠️ Post-Install Cleanup: Fixing the GRUB Entry Named "."
-
-### Issue:
-After installing Fedora KDE Plasma 42, one of the GRUB entries showed up as simply `"."` — this turned out to be the entry for the **newest kernel** (`6.15.7-200.fc42.x86_64`), which made the GRUB menu confusing and unclear.
-
----
-
-### ✅ Resolution:
-
-#### 1. Identify the File
-Locate the corresponding BLS entry for the newest kernel:
-```
-/boot/loader/entries/cc32cd06eeaa440faa33f95512551b9c-6.15.7-200.fc42.x86_64.conf
-```
-
-#### 2. Edit the Title
-Open the file with a text editor:
-```bash
-sudo nano /boot/loader/entries/cc32cd06eeaa440faa33f95512551b9c-6.15.7-200.fc42.x86_64.conf
-```
-
-Find the line:
-```
-title .
-```
-
-And change it to something readable like:
-```
-title Fedora KDE Plasma (6.15.7)
-```
-
-Save and exit the file.
-
-#### 3. Rebuild GRUB
-```bash
-sudo grub2-mkconfig -o /boot/grub2/grub.cfg
-sudo grub2-mkconfig -o /boot/efi/EFI/fedora/grub.cfg
-```
-
-#### 4. Reboot
-Now your GRUB menu will display a clean, labeled entry for your latest kernel.
-
----
-
-### Optional: Remove Old Kernels
-Once confirmed that the new kernel works, you can remove the old entry:
-```bash
-sudo rm /boot/loader/entries/cc32cd06eeaa440faa33f95512551b9c-6.14.0-63.fc42.x86_64.conf
-sudo grub2-mkconfig -o /boot/grub2/grub.cfg
-sudo grub2-mkconfig -o /boot/efi/EFI/fedora/grub.cfg
-```
 ---
 
 ## References & Resources
