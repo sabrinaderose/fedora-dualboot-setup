@@ -137,14 +137,6 @@ sudo grub2-mkconfig -o /boot/efi/EFI/fedora/grub.cfg
 
 ---
 
-## Screenshot Gallery (WIP)
-
-- `images/before_grub.png` – Default GRUB with Fedora kernel strings
-- `images/after_theme.png` – Intervals GRUB theme active
-- `images/windows_detected.png` – Verified Windows entry restored
-
----
-
 ## Key Files and Scripts
 
 | File Path | Description |
